@@ -47,7 +47,7 @@
 // app/(auth)/login.tsx
 import { router } from 'expo-router';
 import React, { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { LoginForm } from '../../components/auth/LoginForm';
 import { Card } from '../../components/common/Card';
 
@@ -57,11 +57,21 @@ export default function LoginScreen() {
   const handleLogin = async (username: string, password: string) => {
     try {
       setLoading(true);
-      // Xử lý đăng nhập
-      console.log('Đăng nhập với:', { username, password });
-      router.replace('/(tabs)');
+      const response = await fetch('http://localhost:5000/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      });
+      const result = await response.json();
+      if (response.ok) {
+        // Có thể lưu token vào AsyncStorage nếu muốn
+        // await AsyncStorage.setItem('token', result.token);
+        router.replace('/(tabs)');
+      } else {
+        Alert.alert('Lỗi', result.message || 'Đăng nhập thất bại');
+      }
     } catch (error) {
-      console.error(error);
+      Alert.alert('Lỗi', 'Không thể kết nối tới server.');
     } finally {
       setLoading(false);
     }

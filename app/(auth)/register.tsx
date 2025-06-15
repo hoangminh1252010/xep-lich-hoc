@@ -7,7 +7,7 @@ import { Card } from '../../components/common/Card';
 
 export default function RegisterScreen() {
   const [loading, setLoading] = useState(false);
-
+  const [message, setMessage] = useState('');
   const handleRegister = async (data: {
     username: string;
     password: string;
@@ -18,20 +18,29 @@ export default function RegisterScreen() {
   }) => {
     try {
       setLoading(true);
-      // Xử lý đăng ký
-      console.log('Đăng ký với:', data);
-      Alert.alert(
-        'Thành công',
-        'Đăng ký thành công! Vui lòng đăng nhập.',
-        [
-          {
-            text: 'OK',
-            onPress: () => router.replace('/(auth)/login'),
-          },
-        ]
-      );
+      // Gọi API backend
+      const response = await fetch('http://localhost:5000/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: data.username,
+          password: data.password,
+          fullName: data.fullName,
+          phone: data.phone,
+          email: data.email,
+        }),
+      });
+      const result = await response.json();
+      if (response.ok) {
+        setMessage('Đăng ký thành công');
+setTimeout(() => {
+  router.replace('/(auth)/login');
+}, 2000);
+      } else {
+        Alert.alert('Lỗi', result.message || 'Đăng ký thất bại. Vui lòng thử lại.');
+      }
     } catch (error) {
-      Alert.alert('Lỗi', 'Đăng ký thất bại. Vui lòng thử lại.');
+      Alert.alert('Lỗi', 'Không thể kết nối tới server.');
     } finally {
       setLoading(false);
     }
@@ -42,7 +51,9 @@ export default function RegisterScreen() {
       <Card style={styles.card}>
         <Text style={styles.title}>Đăng ký tài khoản</Text>
         <RegisterForm onRegister={handleRegister} loading={loading} />
-        
+        {message !== '' && (
+  <Text style={styles.successMessage}>{message}</Text>
+)}
         <TouchableOpacity 
           style={styles.loginLink}
           onPress={() => router.replace('/(auth)/login')}
@@ -61,6 +72,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f5f5f5',
     padding: 20,
+  },
+  successMessage: {
+    color: 'green',
+    fontSize: 16,
+    textAlign: 'center',
+    marginTop: 10,
   },
   card: {
     marginTop: 20,
