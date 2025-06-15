@@ -1,7 +1,7 @@
+// app/(tabs)/_layout.tsx
 import { FontAwesome } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import { useColorScheme } from 'react-native';
-
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -22,6 +22,7 @@ export default function TabLayout() {
         headerTintColor: colorScheme === 'dark' ? '#fff' : '#000',
       }}
     >
+      {/* Tab Trang chủ */}
       <Tabs.Screen
         name="index"
         options={{
@@ -31,6 +32,8 @@ export default function TabLayout() {
           ),
         }}
       />
+
+      {/* Tab Đặt lịch */}
       <Tabs.Screen
         name="booking"
         options={{
@@ -40,8 +43,10 @@ export default function TabLayout() {
           ),
         }}
       />
+
+      {/* Tab Lịch của tôi */}
       <Tabs.Screen
-        name="my-booking"
+        name="my-bookings"
         options={{
           title: 'Lịch của tôi',
           tabBarIcon: ({ color, size }) => (
@@ -49,19 +54,12 @@ export default function TabLayout() {
           ),
         }}
       />
+
+      {/* Tab Cá nhân */}
       <Tabs.Screen
         name="profile"
         options={{
           title: 'Cá nhân',
-          tabBarIcon: ({ color, size }) => (
-            <FontAwesome name="user" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="teacher"
-        options={{
-          title: 'Quản lý',
           tabBarIcon: ({ color, size }) => (
             <FontAwesome name="user" size={size} color={color} />
           ),
